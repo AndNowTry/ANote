@@ -3,18 +3,13 @@ from pydantic import BaseModel, model_validator
 
 
 
-class SearchNoteParams(BaseModel):
-    id:int|None = None
+class GetNotesParams(BaseModel):
+    ids:list[int]|None = None
     search_line:str|None = None
-
-    @model_validator(mode="after")
-    def check_at_least_one(self):
-        if all(value is None for value in [
-            self.id,
-            self.search_line
-        ]):
-            raise ValueError("Id or search_line must be indicated")
-        return self
+    start_time:datetime|None = None
+    end_time:datetime|None = None
+    sort_by_time:bool|None = None
+    sort_by_name:bool|None = None
 
 
 class AddNoteParams(BaseModel):
