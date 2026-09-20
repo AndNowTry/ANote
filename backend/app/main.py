@@ -27,7 +27,7 @@ def get_notes(params: Annotated[GetNotesParams, Depends()], session: SqlSession)
     try:
         sql_request = select(Note).where(Note.status == Note.NoteStatus.EXISTS)
 
-        if params.ids is not None:
+        if params.ids is None:
             sql_request = sql_request.where(Note.id.in_(params.ids))
 
         if params.search_line is not None:
