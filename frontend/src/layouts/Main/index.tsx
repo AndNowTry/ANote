@@ -20,7 +20,12 @@ export function Main()
 {
     return (
         <>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box
+                sx={{
+                    flexGrow: 1,
+                    padding: 3
+                }}
+            >
                 <WillowDark>
                     <Calendar
                         events={events}

@@ -1,5 +1,7 @@
-import { AppBar, Toolbar, IconButton } from '@mui/material'
-import { MedicalFlask, Sun, Translate } from "@boxicons/react"
+import {AppBar, Box, Toolbar} from '@mui/material'
+import LanguageSwitch from "./components/LanguageSwitch.tsx"
+import ThemeSwitch from "./components/ThemeSwitch.tsx";
+import SidebarSwitch from "./components/SidebarSwitch.tsx";
 
 
 
@@ -14,18 +16,22 @@ export function Header()
                 boxShadow: 'none',
             }}
         >
-            <Toolbar sx={{ display: 'flex', justifyContent: 'end' }}>
-                <IconButton size="large">
-                    <Translate />
-                </IconButton>
+            <Toolbar
+                disableGutters
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    px: 1.2,
+                    gap: 0.6,
+                }}
+            >
+                <SidebarSwitch />
 
-                <IconButton size="large">
-                    <Sun />
-                </IconButton>
+                <Box sx={{ ml: 'auto' }}>
+                    <LanguageSwitch />
 
-                <IconButton size="large">
-                    <MedicalFlask />
-                </IconButton>
+                    <ThemeSwitch />
+                </Box>
             </Toolbar>
         </AppBar>
     )
