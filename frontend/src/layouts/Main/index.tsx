@@ -1,39 +1,33 @@
-import { Box } from '@mui/material'
+import {Box, useTheme} from '@mui/material'
 import '@svar-ui/react-calendar/all.css'
-import { Calendar, WillowDark } from "@svar-ui/react-calendar"
+import {Willow, WillowDark} from "@svar-ui/react-calendar"
+import {CalendarView} from "./components/CalendarView"
 
-
-
-const date = new Date(2026, 4, 5)
-const events = [
-    {
-        id: 1,
-        start: new Date(2026, 4, 5, 9, 0),
-        end: new Date(2026, 4, 5, 10, 0),
-        text: "Standup",
-    },
-]
 
 
 
 export function Main()
 {
+    const isDarkThemeMode = useTheme().palette.mode === 'dark'
+
     return (
         <>
             <Box
                 sx={{
                     flexGrow: 1,
-                    padding: 3
+                    padding: 3,
+                    minHeight: 0,
                 }}
             >
-                <WillowDark>
-                    <Calendar
-                        events={events}
-                        date={date}
-                        readonly={true}
-                        views={["day", "week"]}
-                    />
-                </WillowDark>
+                {isDarkThemeMode ? (
+                    <WillowDark>
+                        <CalendarView />
+                    </WillowDark>
+                ) : (
+                    <Willow>
+                        <CalendarView />
+                    </Willow>
+                )}
             </Box>
         </>
     )
