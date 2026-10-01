@@ -1,19 +1,7 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material"
-import type {CalendarEvent, CalendarInstanceApi} from "@svar-ui/react-calendar"
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { MuiColorInput } from 'mui-color-input'
-import dayjs, { Dayjs } from "dayjs"
-import {LocalizationProvider} from "@mui/x-date-pickers";
-import { useState } from "react";
 
-
-
-type NoteDialogProps = {
-    current_api: CalendarInstanceApi | null;
-    mode: "add" | "edit" | "delete";
-    id?: number;
-    event: Partial<CalendarEvent>;
+type ConfirmationDialogProps = {
+    title:string
+    text:string
     resolve: (event: Partial<CalendarEvent> | null) => void;
 };
 
