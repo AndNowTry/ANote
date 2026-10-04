@@ -1,7 +1,7 @@
 import {Monitor, Moon, Sun} from "@boxicons/react"
 import {IconButton, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material"
 import { useState } from "react"
-import * as React from "react";
+import * as React from "react"
 import {type ThemeMode, useThemeStore} from "../../../states/theme.ts"
 
 
@@ -12,7 +12,8 @@ type Option = {
 }
 
 
-function ThemeSwitch() {
+function ThemeSwitch()
+{
     const [isMenuOpen, setMenuState] = useState<null | HTMLElement>(null)
 
 

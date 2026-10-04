@@ -1,6 +1,6 @@
 import {DockLeftAlt, Square} from "@boxicons/react"
 import {IconButton} from "@mui/material"
-import {useDisplayViewStore} from "../../../states/device_view.ts";
+import {useDisplayViewStore} from "../../../states/device_view.ts"
 
 
 

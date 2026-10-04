@@ -1,13 +1,14 @@
 import {Translate} from "@boxicons/react"
 import {Badge, IconButton, Menu, MenuItem} from "@mui/material"
 import {useEffect, useState} from "react"
-import i18n from "i18next"
+import i18n, {t} from "i18next"
 import {type LanguageMode, useLanguageStore} from "../../../states/language.ts"
 import * as React from "react"
 
 
 
-function LanguageSwitch() {
+function LanguageSwitch()
+{
     const [isMenuOpen, setMenuState] = useState<null | HTMLElement>(null)
 
     const stateLanguageMode = useLanguageStore((state) => state.language)
@@ -18,7 +19,7 @@ function LanguageSwitch() {
     }, [stateLanguageMode])
 
     const menuOptions:Record<LanguageMode,string> = {
-        ru:"Русский",
+        ru:"Russian",
         en:"English",
     }
 
@@ -60,7 +61,7 @@ function LanguageSwitch() {
                         key={language}
                         onClick={() => changeLanguage(language as LanguageMode)}
                     >
-                        {label}
+                        {t(label)}
                     </MenuItem>
                 ))}
             </Menu>

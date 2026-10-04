@@ -1,7 +1,7 @@
 import {AppBar, Box, Toolbar} from '@mui/material'
 import LanguageSwitch from "./components/LanguageSwitch.tsx"
-import ThemeSwitch from "./components/ThemeSwitch.tsx";
-import SidebarSwitch from "./components/SidebarSwitch.tsx";
+import ThemeSwitch from "./components/ThemeSwitch.tsx"
+import SidebarSwitch from "./components/SidebarSwitch.tsx"
 
 
 
