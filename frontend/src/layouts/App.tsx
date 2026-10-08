@@ -38,6 +38,7 @@ function App()
                     minHeight: '100vh'
                 }}>
                     <Sidebar />
+
                     <Box sx={{
                         flexGrow: 1,
                         display: 'flex',

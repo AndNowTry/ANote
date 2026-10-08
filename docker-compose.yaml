@@ -1,6 +1,8 @@
 services:
   backend:
     build: ./backend
+    env_file:
+      - .env
     volumes:
       - ./backend/app:/app
       - ./backend/data:/data
@@ -12,6 +14,9 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
     volumes:
       - ./frontend:/app
       - /app/node_modules

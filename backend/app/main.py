@@ -2,8 +2,10 @@ import logging
 from datetime import datetime
 import uvicorn
 from typing import Annotated
+from os import environ as env
 from sqlmodel import Session, select, or_, asc, desc
 from fastapi import FastAPI, Depends, HTTPException
+from starlette.middleware.cors import CORSMiddleware
 from external.models.data_base import Note, History
 from external.clients.database import create_db_and_tables, get_session
 from external.models.request import AddNoteParams, ModifyNoteParams, DeleteNoteParams, DeleteHistoryParams, GetNotesParams
@@ -13,6 +15,13 @@ from external.models.request import AddNoteParams, ModifyNoteParams, DeleteNoteP
 logger = logging.getLogger(__name__)
 SqlSession = Annotated[Session, Depends(get_session)]
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[env["CORS_ORIGIN"]],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
@@ -27,7 +36,7 @@ def get_notes(params: Annotated[GetNotesParams, Depends()], session: SqlSession)
     try:
         sql_request = select(Note).where(Note.status == Note.NoteStatus.EXISTS)
 
-        if params.ids is None:
+        if params.ids is not None:
             sql_request = sql_request.where(Note.id.in_(params.ids))
 
         if params.search_line is not None:
@@ -115,7 +124,7 @@ def modify_note(params:ModifyNoteParams, session:SqlSession):
                 note.status == Note.NoteStatus.HISTORY):
             raise HTTPException(status_code=404, detail="Note not found")
 
-        old_history_note = note.deepcopy()
+        old_history_note = Note(**note.model_dump(exclude={"id"}))
         old_history_note.id = None
         old_history_note.status = Note.NoteStatus.HISTORY
 
@@ -123,7 +132,7 @@ def modify_note(params:ModifyNoteParams, session:SqlSession):
         for key, value in data.items():
             setattr(note, key, value)
 
-        new_history_note = note.deepcopy()
+        new_history_note = Note(**note.model_dump(exclude={"id"}))
         new_history_note.id = None
         new_history_note.status = Note.NoteStatus.HISTORY
 
@@ -162,7 +171,10 @@ def delete_note(params:DeleteNoteParams, session:SqlSession):
 
         note.status = Note.NoteStatus.DELETE
 
-        session.delete(select(History).where(note.id == History.original_note_id))
+        histories = session.exec(select(History).where(History.original_note_id == note.id)).all()
+        for history in histories:
+            session.delete(history)
+
         session.commit()
         session.refresh(note)
 

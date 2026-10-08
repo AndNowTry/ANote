@@ -1,5 +1,5 @@
-import {Calendar, type CalendarInstanceApi, ContextMenu} from "@svar-ui/react-calendar"
-import {useEffect, useMemo, useState} from "react"
+import {Calendar, type CalendarEvent, type CalendarInstanceApi, ContextMenu} from "@svar-ui/react-calendar"
+import {useCallback, useEffect, useMemo, useState} from "react"
 import './styles/calendar.css'
 import {EventBlock} from "./components/EventBlock.tsx"
 import {EditorModal} from "./components/EditorModal.tsx"
@@ -8,27 +8,15 @@ import { Locale } from "@svar-ui/react-core"
 import {useTranslation} from "react-i18next"
 import {useTheme} from "@mui/material"
 import {LoadingState} from "./components/LoadingState.tsx"
+import {noteProvider} from "./scripts/NoteProvider.ts"
 
-
-
-
-
-const testEvents = [
-    {
-        id: 1,
-        start: new Date(2026, 4, 5, 9, 0),
-        end: new Date(2026, 4, 5, 10, 0),
-        text: "Standup",
-    },
-]
 
 
 export function CalendarView()
 {
     const [api, setApi] = useState<CalendarInstanceApi|undefined>()
-    const [events, setEvents] = useState(testEvents)
-    // @ts-ignore
-    const [loading, setLoading] = useState(false)
+    const [events, setEvents] = useState<CalendarEvent[]>([])
+    const [loading, setLoading] = useState(true)
     const { i18n } = useTranslation()
     const theme = useTheme()
 
@@ -37,37 +25,73 @@ export function CalendarView()
         [i18n.resolvedLanguage, i18n.language]
     )
 
+
     useEffect(() => {
-        if(api)
-        { // @ts-ignore
-            setEvents(api.getEvents())
+        let cancelled = false
+
+        setApi(undefined)
+        setLoading(true)
+
+        async function loadNotes()
+        {
+            setApi(undefined)
+            setLoading(true)
+
+            try
+            {
+                const data = await noteProvider.getData()
+
+                if(!cancelled) setEvents(data)
+            }
+            catch(error)
+            {
+                console.error("Load notes error:", error)
+            }
+            finally
+            {
+                if(!cancelled)
+                {
+                    setLoading(false)
+                }
+            }
         }
-    }, [i18n.language, theme])
+
+        loadNotes()
+
+        return () => {
+            cancelled = true
+        }
+    }, [i18n.language, theme.palette.mode])
+
+    const init = useCallback((instance:CalendarInstanceApi) => {
+        instance.setNext(noteProvider)
+        setApi(instance)
+    }, [])
 
     return (
-    <>
-        <Locale key={i18n.language} words={words}>
-            <ContextMenu api={api}>
-                <style>{extraCalendarCss}</style>
+        <>
+            <Locale key={i18n.language} words={words}>
+                <ContextMenu api={api}>
+                    <style>{extraCalendarCss}</style>
 
-                { loading
-                    ?
-                    <LoadingState />
-                    :
-                    <Calendar
-                        init={setApi}
-                        events={events}
-                        date={new Date()}
-                        view={"week"}
-                        views={["day", "week"]}
-                        eventCss={eventCss}
-                        eventContent={EventBlock}
-                    />
-                }
-            </ContextMenu>
+                    { loading
+                        ?
+                        <LoadingState />
+                        :
+                        <Calendar
+                            init={init}
+                            events={events}
+                            date={new Date()}
+                            view={"week"}
+                            views={["day", "week"]}
+                            eventCss={eventCss}
+                            eventContent={EventBlock}
+                        />
+                    }
+                </ContextMenu>
 
-            {api && <EditorModal api={api} />}
-        </Locale>
-    </>
+                {api && <EditorModal api={api} />}
+            </Locale>
+        </>
     )
 }
