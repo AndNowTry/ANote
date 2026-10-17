@@ -1,5 +1,6 @@
 import {RestDataProvider, type CalendarEvent} from "@svar-ui/react-calendar"
 import {api} from "../../../../../plugins/axios.ts"
+import {useHistoryStore} from "../../../../Sidebar/components/History/scripts/historyStory.ts";
 
 
 
@@ -65,6 +66,8 @@ class NoteProvider extends RestDataProvider
         async function modify(data:any)
         {
             await api.post("/modify_note", {id:data.id, ...noteToPayload(data.event)})
+
+            void useHistoryStore.getState().load()
         }
 
         return {
@@ -91,6 +94,8 @@ class NoteProvider extends RestDataProvider
             "delete-event": {
                 handler: async(data: any) => {
                     await api.post("/delete_note", {id: data.id})
+
+                    void useHistoryStore.getState().load()
                 },
             },
         }

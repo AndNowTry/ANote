@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 from pydantic import BaseModel, model_validator
 
 
@@ -41,9 +42,18 @@ class ModifyNoteParams(BaseModel):
         return self
 
 
+class GetHistoryParams(BaseModel):
+    start_time:datetime|None = None
+    end_time:datetime|None = None
+    search_line:str|None = None
+    sort_by:Literal["time", "name"] = "time"
+    descending:bool = True
+
+
 class DeleteNoteParams(BaseModel):
     id:int
 
 
 class DeleteHistoryParams(BaseModel):
     id:int
+

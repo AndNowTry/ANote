@@ -1,20 +1,24 @@
 import logging
-from datetime import datetime
 import uvicorn
 from typing import Annotated
 from os import environ as env
+from datetime import datetime
+from sqlalchemy.orm import aliased
 from sqlmodel import Session, select, or_, asc, desc
 from fastapi import FastAPI, Depends, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from external.models.data_base import Note, History
 from external.clients.database import create_db_and_tables, get_session
-from external.models.request import AddNoteParams, ModifyNoteParams, DeleteNoteParams, DeleteHistoryParams, GetNotesParams
+from external.models.request import AddNoteParams, ModifyNoteParams, GetNotesParams, GetHistoryParams, \
+    DeleteHistoryParams, DeleteNoteParams
 
 
 
 logger = logging.getLogger(__name__)
 SqlSession = Annotated[Session, Depends(get_session)]
 app = FastAPI()
+
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -185,42 +189,91 @@ def delete_note(params:DeleteNoteParams, session:SqlSession):
 
 
 @app.post("/get_history")
-def delete_note(params:DeleteHistoryParams, session:SqlSession):
+def get_history(params:GetHistoryParams, session:SqlSession):
     try:
-        record = session.get(History, params.id)
+        original_note = aliased(Note)
+        last_note = aliased(Note)
+        new_note = aliased(Note)
 
-        if record is None:
-            raise HTTPException(status_code=404, detail="History record not found")
+        sql_request = (
+            select(History, last_note, new_note)
+            .join(original_note, original_note.id == History.original_note_id)
+            .join(last_note, last_note.id == History.last_note_id)
+            .join(new_note, new_note.id == History.new_note_id)
+            .where(original_note.status == Note.NoteStatus.EXISTS)
+        )
 
-        session.delete(session.get(Note, record.last_note_id))
-        session.delete(session.get(Note, record.new_note_id))
+        if params.start_time is not None:
+            sql_request = sql_request.where(History.update_time >= params.start_time)
 
-        session.delete(record)
-        session.commit()
-        session.refresh(record)
+        if params.end_time is not None:
+            sql_request = sql_request.where(History.update_time < params.end_time)
 
-        return {"message": f"History record{record.id} deleted"}
+        if params.search_line:
+            sql_request = sql_request.where(
+                or_(
+                    last_note.name.contains(params.search_line),
+                    new_note.name.contains(params.search_line),
+                )
+            )
+
+        sort_column = new_note.name if params.sort_by == "name" else History.update_time
+        order_func = desc if params.descending else asc
+        sql_request = sql_request.order_by(order_func(sort_column), History.id)
+
+        rows = session.exec(sql_request).all()
+
+        def to_history_note(note:Note):
+            return {
+                "name":note.name,
+                "description":note.description,
+                "color":note.color,
+                "start_time":note.start_time,
+                "end_time":note.end_time,
+            }
+
+        return [
+            {
+                "id":history.id,
+                "update_time":history.update_time,
+                "original_note_id":history.original_note_id,
+                "last_note":to_history_note(last),
+                "new_note":to_history_note(new),
+            } for history, last, new in rows
+        ]
     except Exception as error:
         logger.exception(f"BD error: {error}")
         raise HTTPException(status_code=500, detail=f"BD error: {error}")
 
 
 @app.post("/delete_history")
-def delete_note(params:DeleteHistoryParams, session:SqlSession):
+def delete_history(params:DeleteHistoryParams, session:SqlSession):
     try:
         record = session.get(History, params.id)
 
         if record is None:
             raise HTTPException(status_code=404, detail="History record not found")
 
-        session.delete(session.get(Note, record.last_note_id))
-        session.delete(session.get(Note, record.new_note_id))
+        record_id = record.id
+        snapshot_ids = [record.last_note_id, record.new_note_id]
 
         session.delete(record)
-        session.commit()
-        session.refresh(record)
+        session.flush()
 
-        return {"message": f"History record{record.id} deleted"}
+        for snapshot_id in snapshot_ids:
+            snapshot = session.get(Note, snapshot_id)
+
+            if snapshot is not None and snapshot.status == Note.NoteStatus.HISTORY:
+                session.delete(snapshot)
+
+        session.commit()
+
+        return {
+            "id":record_id,
+            "message":f"History record {record_id} deleted"
+        }
+    except HTTPException:
+        raise
     except Exception as error:
         logger.exception(f"BD error: {error}")
         raise HTTPException(status_code=500, detail=f"BD error: {error}")
