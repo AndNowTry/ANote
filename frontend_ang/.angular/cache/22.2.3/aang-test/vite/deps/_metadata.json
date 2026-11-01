@@ -1,0 +1,70 @@
+{
+  "hash": "491b8684",
+  "configHash": "61477adf",
+  "lockfileHash": "a917ff51",
+  "browserHash": "a1dc29db",
+  "optimized": {
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "d2212940",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "05cafb43",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "28d36f64",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "40f378c1",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "22f35efb",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "fbd7a923",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "_platform_location-chunk-raAKrl-w": {
+      "file": "_platform_location-chunk-raAKrl-w.js",
+      "isDynamicEntry": false
+    },
+    "common-Dw6q6Dy5": {
+      "file": "common-Dw6q6Dy5.js",
+      "isDynamicEntry": false
+    },
+    "core-Cv98Z2sf": {
+      "file": "core-Cv98Z2sf.js",
+      "isDynamicEntry": false
+    },
+    "esm5-DYNb5pjm": {
+      "file": "esm5-DYNb5pjm.js",
+      "isDynamicEntry": false
+    },
+    "http-qKA_Feah": {
+      "file": "http-qKA_Feah.js",
+      "isDynamicEntry": false
+    },
+    "platform-browser-CsWYyFil": {
+      "file": "platform-browser-CsWYyFil.js",
+      "isDynamicEntry": false
+    }
+  }
+}

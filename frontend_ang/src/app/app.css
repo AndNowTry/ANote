@@ -1,0 +1,54 @@
+main 
+{
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+.currencies 
+{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.currency-card 
+{
+  padding: 16px;
+  border: 1px solid #000;
+  border-radius: 12px;
+}
+
+.currency-card h2 
+{
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.form-section 
+{
+  margin-top: 32px;
+}
+
+form 
+{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.error 
+{
+  color: #c00;
+  margin: 0;
+}
+
+@media(max-width: 700px) 
+{
+  .currencies 
+  {
+    grid-template-columns: 1fr;
+  }
+}

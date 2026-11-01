@@ -12,19 +12,29 @@ services:
       - ANote-network
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
-  frontend:
-    build: ./frontend
+  frontend_rct:
+    build: ./frontend_rct
     environment:
       VITE_API_URL: ${VITE_API_URL}
       VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
     volumes:
-      - ./frontend:/app
+      - ./frontend_rct:/app
       - /app/node_modules
     ports:
       - "5173:5173"
     networks:
       - ANote-network
     command: npm run dev -- --host 0.0.0.0
+
+  frontend_ang:
+    build: ./frontend_ang
+    volumes:
+      - ./frontend_ang:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    networks:
+      - ANote-network
 
 networks:
   ANote-network:
