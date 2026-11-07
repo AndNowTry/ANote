@@ -1,0 +1,59 @@
+.folders 
+{ 
+  max-width: 640px; 
+  margin: 0 auto; 
+  padding: 24px 16px; 
+  font-family: system-ui, sans-serif; 
+}
+.row 
+{ 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+}
+.grow 
+{ 
+  flex: 1; 
+  min-width: 0; 
+}
+.list 
+{ 
+  list-style: none; 
+  margin: 16px 0 0; 
+  padding: 0; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+.item 
+{ 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 12px; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+}
+.name 
+{ 
+  font-weight: 600; 
+}
+.hint, .empty 
+{ 
+  color: #777; 
+  font-size: 13px; 
+}
+.error 
+{ 
+  color: #c62828; 
+  margin: 0 0 8px; 
+}
+.danger
+{ 
+  color: #c62828; 
+}
+input, button 
+{ 
+  padding: 6px 10px; 
+  font: inherit; 
+}

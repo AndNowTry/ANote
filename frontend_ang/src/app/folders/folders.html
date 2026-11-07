@@ -1,0 +1,90 @@
+<section class="folders">
+  <h2>Папки по неделям</h2>
+
+  <div class="row">
+    <input 
+      class="grow" 
+      type="search" 
+      placeholder="Поиск по названию папки"
+      [value]="service.search()" 
+      (input)="onSearch($event)"
+    >
+  </div>
+
+  <div class="row">
+    <input 
+      #week class="grow" 
+      type="week"
+    >
+
+    <button 
+      type="button" 
+      (click)="create(week.value)"
+    >
+      Создать
+    </button>
+  </div>
+
+  @if(error()) 
+  {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <ul class="list">
+    @for(folder of service.folders(); track folder.id) 
+    {
+      <li class="item">
+        @if(editingId() === folder.id) 
+        {
+          <input 
+            class="grow" 
+            [value]="draft()" 
+            (input)="onDraft($event)"
+            (keydown.enter)="saveRename()" 
+            (keydown.escape)="cancelRename()"
+          >
+
+          <button 
+            type="button" 
+            (click)="saveRename()"
+          >
+            Сохранить
+          </button>
+
+          <button 
+            type="button" 
+            (click)="cancelRename()"
+          >
+            Отмена
+          </button>
+        } 
+        @else 
+        {
+          <div class="grow">
+            <div class="name">{{ folder.name }}</div>
+            <div class="hint">{{ range(folder.weekStart) }}</div>
+          </div>
+          <button 
+            type="button" 
+            (click)="startRename(folder)"
+          >
+            Переименовать
+          </button>
+          <button 
+            type="button" 
+            class="danger" 
+            (click)="remove(folder)"
+          >
+            Удалить
+          </button>
+        }
+      </li>
+    } 
+    @empty 
+    {
+      <li class="empty">
+        {{ service.total() === 0 ? 'Папок пока нет, создай первую' : 'Ничего не найдено' }}
+      </li>
+    }
+  </ul>
+</section>
