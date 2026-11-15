@@ -1,0 +1,51 @@
+<section class="notes">
+  <h2>Заметки</h2>
+
+  <div class="row">
+    <input
+      class="grow"
+      type="search"
+      placeholder="Поиск по названию заметки"
+      [value]="service.search()"
+      (input)="onSearch($event)"
+    >
+    <button
+      type="button"
+      (click)="service.clearFilters()"
+    >
+      Сбросить
+    </button>
+  </div>
+
+  <div class="tags">
+    @for(tag of service.tags(); track tag)
+    {
+      <button
+        type="button"
+        class="chip"
+        [class.active]="service.selectedTags().includes(tag)"
+        (click)="service.toggleTag(tag)">{{ tag }}
+      </button>
+    }
+  </div>
+
+  <ul class="list">
+    @for(note of service.notes(); track note.id)
+    {
+      <li class="item">
+        <div class="name">{{ note.name }}</div>
+        <div class="hint">{{ folders.nameOf(note.folderId) }}</div>
+        <div class="tags">
+          @for(tag of note.tags; track tag)
+          {
+            <span class="chip small">{{ tag }}</span>
+          }
+        </div>
+      </li>
+    }
+    @empty
+    {
+      <li class="empty">Ничего не найдено</li>
+    }
+  </ul>
+</section>

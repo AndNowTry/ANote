@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { FoldersService } from './folders.service'
-import { Folder } from './models'
+import { Folder } from '../models'
 import { weekRange } from './week'
 
 
@@ -10,7 +10,7 @@ import { weekRange } from './week'
   styleUrl:'./folders.css',
   changeDetection:ChangeDetectionStrategy.OnPush,
 })
-export class Folders 
+export class Folders
 {
   protected readonly service = inject(FoldersService)
 
@@ -21,12 +21,12 @@ export class Folders
   protected readonly range = weekRange
 
 
-  protected onSearch(event:Event):void 
+  protected onSearch(event:Event):void
   {
     this.service.search.set((event.target as HTMLInputElement).value)
   }
 
-  protected create(week:string):void 
+  protected create(week:string):void
   {
     const result = this.service.create(week)
 
@@ -37,18 +37,18 @@ export class Folders
     )
   }
 
-  protected startRename(folder:Folder):void 
+  protected startRename(folder:Folder):void
   {
     this.editingId.set(folder.id)
     this.draft.set(folder.name)
   }
 
-  protected onDraft(event:Event):void 
+  protected onDraft(event:Event):void
   {
     this.draft.set((event.target as HTMLInputElement).value)
   }
 
-  protected saveRename():void 
+  protected saveRename():void
   {
     const id = this.editingId()
     if (id) this.service.rename(id, this.draft())
@@ -56,14 +56,14 @@ export class Folders
     this.editingId.set(null)
   }
 
-  protected cancelRename():void 
+  protected cancelRename():void
   {
     this.editingId.set(null)
   }
 
-  protected remove(folder: Folder):void 
+  protected remove(folder: Folder):void
   {
-    if(confirm(`Удалить папку "${folder.name}"?`)) 
+    if(confirm(`Удалить папку "${folder.name}"?`))
     {
       this.service.remove(folder.id)
     }
