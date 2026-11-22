@@ -11,6 +11,7 @@ export class NotesService
   readonly search = signal('')
   readonly selectedTags = signal<string[]>([])
 
+  readonly highlightedId = signal<number | null>(this.readNoteParam())
 
   private readonly all = signal<Note[]>(this.mock())
 
@@ -89,6 +90,14 @@ export class NotesService
         tags: ['работа']
       },
     ]
+  }
+
+  private readNoteParam():number|null
+  {
+    const value = new URLSearchParams(window.location.search).get('note')
+    const id = value === null ? NaN : Number(value)
+
+    return Number.isInteger(id) ? id : null
   }
 }
 

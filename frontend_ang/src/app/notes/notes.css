@@ -58,6 +58,28 @@
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+.item.highlight
+{
+  border-color: #f9a825;
+  background: rgba(249, 168, 37, 0.12);
+}
+.head
+{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.open
+{
+  font-size: 13px;
+  color: #1976d2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.open:hover
+{
+  text-decoration: underline;
+}
 .item .tags
 {
   margin: 6px 0 0;

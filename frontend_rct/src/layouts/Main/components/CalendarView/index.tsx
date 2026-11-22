@@ -1,5 +1,5 @@
 import {Calendar, type CalendarEvent, type CalendarInstanceApi, ContextMenu} from "@svar-ui/react-calendar"
-import {useCallback, useEffect, useMemo, useState} from "react"
+import {useCallback, useEffect, useMemo, useRef, useState} from "react"
 import './styles/calendar.css'
 import {EventBlock} from "./components/EventBlock.tsx"
 import {EditorModal} from "./components/EditorModal.tsx"
@@ -9,6 +9,7 @@ import {useTranslation} from "react-i18next"
 import {useTheme} from "@mui/material"
 import {LoadingState} from "./components/LoadingState.tsx"
 import {noteProvider} from "./scripts/NoteProvider.ts"
+import {clearNoteParam, readNoteParam} from "./scripts/Links.ts"
 
 
 
@@ -19,6 +20,9 @@ export function CalendarView()
     const [loading, setLoading] = useState(true)
     const { i18n } = useTranslation()
     const theme = useTheme()
+
+    const [noteId] = useState(readNoteParam)
+    const opened = useRef(false)
 
     const words = useMemo(
         () => i18n.getResourceBundle(i18n.language, "translation"),
@@ -67,6 +71,19 @@ export function CalendarView()
         instance.setNext(noteProvider)
         setApi(instance)
     }, [])
+
+    useEffect(() => {
+        if (!api || loading || noteId === null || opened.current) return
+
+        opened.current = true
+        clearNoteParam()
+
+        const event = events.find((item) => Number(item.id) === noteId)
+        if (!event) return
+
+        api.exec("navigate-to", {date: event.start})
+        api.exec("select-event", {id: event.id})
+    }, [api, loading, events, noteId])
 
     return (
         <>

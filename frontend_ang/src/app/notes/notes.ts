@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core'
 import {NotesService} from './notes.service'
 import {FoldersService} from '../folders/folders.service'
+import {reactNoteUrl} from '../app.config'
 
 
 @Component({
@@ -14,8 +15,10 @@ export class Notes
   protected readonly service = inject(NotesService)
   protected readonly folders = inject(FoldersService)
 
+  protected readonly reactUrl = reactNoteUrl
 
-  protected onSearch(event: Event):void
+
+  protected onSearch(event:Event):void
   {
     this.service.search.set((event.target as HTMLInputElement).value)
   }

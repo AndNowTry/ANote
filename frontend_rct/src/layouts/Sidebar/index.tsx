@@ -1,6 +1,8 @@
-import {Box, Typography} from '@mui/material'
+import {Box, Button, Typography} from '@mui/material'
 import { useDisplayViewStore } from "../../states/device_view.ts"
 import {History} from "./components/History"
+import {useTranslation} from "react-i18next"
+import {ANGULAR_URL} from "../Main/components/CalendarView/scripts/Links.ts"
 
 
 
@@ -8,6 +10,8 @@ import {History} from "./components/History"
 export function Sidebar()
 {
     const isSidebarOpen = useDisplayViewStore((state) => state.isSidebarOpen)
+    const {t} = useTranslation()
+
 
     return (
         <>
@@ -26,6 +30,17 @@ export function Sidebar()
                         <Typography variant="h4">
                             Anote
                         </Typography>
+                    </Box>
+
+                    <Box sx={{paddingX: 2}}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            href={ANGULAR_URL}
+                        >
+                            {t("Organize notes")}
+                        </Button>
                     </Box>
 
                     <History />

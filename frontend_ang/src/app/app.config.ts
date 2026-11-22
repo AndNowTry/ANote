@@ -11,3 +11,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch())
   ]
 }
+
+
+export const REACT_APP_URL = 'http://localhost:5173'
+
+export function reactNoteUrl(id:number):string
+{
+  return `${REACT_APP_URL}/?note=${id}`
+}
